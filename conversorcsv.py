@@ -39,7 +39,7 @@ class Aluno:
 
 alunos = []
 
-with open("C:/Users/POSITIVO/projetos/dis-csv-discentes-de-graduacao-de-2025_1.csv", encoding="UTF-8") as arquivocsv:
+with open("dis-csv-discentes-de-graduacao-de-2025_1.csv", encoding="UTF-8") as arquivocsv:
 
     if arquivocsv == None:
         print("=============================\nFalha ao carregar o arquivo\n=============================")
