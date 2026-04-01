@@ -16,6 +16,37 @@ class Aluno:
     nome_unidade: str
     nome_unidade_gestora: str
 
+#FUNÇÃO PARA UPAR ARQUIVO CSV
+def uparquivo():   
+    arquivo = input("Informe o caminho do arquivo csv: ")
+
+    try:
+        with open(arquivo, encoding="UTF-8") as arquivocsv:
+            alunos = []
+            print("=============================\nArquivo carregado com sucesso\n=============================") 
+            leitor = csv.DictReader(arquivocsv,delimiter=",")
+
+            for linha in leitor:
+                aluno = Aluno(
+                    matricula=int(linha["matricula"]),
+                    nome=linha["nome_discente"],
+                    ano_ingresso=int(linha["ano_ingresso"]),
+                    periodo_ingresso=int(linha["periodo_ingresso"]),
+                    tipo_discente=linha["tipo_discente"],
+                    status_discente=linha["status_discente"],
+                    nivel_ensino=linha["nivel_ensino"],
+                    nome_curso=linha["nome_curso"],
+                    modalidade_curso=linha["modalidade_educacao"],
+                    nome_unidade=linha["nome_unidade"],
+                    nome_unidade_gestora=linha["nome_unidade_gestora"]
+                )
+                alunos.append(aluno)
+                
+            return alunos
+    except:
+        print("=============================\nFalha ao carregar o arquivo\n=============================")
+
+
 #FUNÇÃO PARA IMPRESSÃO DOS DADOS, PARÂMETRO DE BUSCA = MATRÍCULA
 def imprimir (alunos, matricula):
     n = 0
@@ -37,9 +68,7 @@ def imprimir (alunos, matricula):
         f"UNIDADE: {alunos[n].nome_unidade}\n"
         f"UNIDADE GESTORA: {alunos[n].nome_unidade_gestora}")
 
-
 #FUNÇÃO SALVAR COMO TEXTO
-
 def savetxt (alunos):
 
     try:
@@ -57,58 +86,41 @@ def savetxt (alunos):
                 f"UNIDADE: {aluno.nome_unidade}\n"
                 f"UNIDADE GESTORA: {aluno.nome_unidade_gestora}\n", file = arquivotxt)
 
-        if arquivotxt != None:
-            print ("Arquivo txt salvo com sucesso.")
+        print ("Arquivo txt salvo com sucesso.")
 
     except:
         print("Erro ao salvar o arquivo.")
 
-alunos = []
-
-try:
-    with open("C:/Users/POSITIVO/projetos/dis-csv-discentes-de-graduacao-de-2025_1.csv", encoding="UTF-8") as arquivocsv:
-        print("=============================\nArquivo carregado com sucesso\n=============================") 
-        leitor = csv.DictReader(arquivocsv,delimiter=",")
-
-        for linha in leitor:
-            aluno = Aluno(
-                matricula=int(linha["matricula"]),
-                nome=linha["nome_discente"],
-                ano_ingresso=int(linha["ano_ingresso"]),
-                periodo_ingresso=int(linha["periodo_ingresso"]),
-                tipo_discente=linha["tipo_discente"],
-                status_discente=linha["status_discente"],
-                nivel_ensino=linha["nivel_ensino"],
-                nome_curso=linha["nome_curso"],
-                modalidade_curso=linha["modalidade_educacao"],
-                nome_unidade=linha["nome_unidade"],
-                nome_unidade_gestora=linha["nome_unidade_gestora"]
-            )
-            alunos.append(aluno)
-
-except:
-    print("=============================\nFalha ao carregar o arquivo\n=============================")
-
-
-
 def main():
+
+    alunos = None
 
     while True:
         option = int(input("============================================================\n"
                         "Informe o n° da opção desejada:\n"
-                        "1 - Exibir dados de Aluno através da matrícula.\n"
-                        "2 - Salvar arquivo como txt.\n"
-                        "3 - Sair\n"
+                        "1 - Carregar arquivo csv.\n"
+                        "2 - Exibir dados de Aluno através da matrícula.\n"
+                        "3 - Salvar arquivo como txt.\n"
+                        "4 - Sair\n"
                         "============================================================\n"))
-        
         if option == 1:
-            matriculadiscente = int(input("Informe a matricula do discente para obtenção dos dados: "))
-            print("=========================================================================")
-            imprimir(alunos,matriculadiscente) 
-        
+            alunos = uparquivo()
+
         elif option == 2:
-            savetxt(alunos)
+            if alunos is not None:
+                matriculadiscente = int(input("Informe a matricula do discente para obtenção dos dados: "))
+                print("=========================================================================")
+                imprimir(alunos,matriculadiscente) 
+            else:
+                print ("Carregue o arquivo primeiro!")
+        
         elif option == 3:
+            if alunos is not None:
+                savetxt(alunos)
+            else:
+                print ("Carregue o arquivo primeiro!")   
+
+        elif option == 4:
             print("Saindo...")
             break
         else:
